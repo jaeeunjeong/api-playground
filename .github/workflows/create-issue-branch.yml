@@ -2,11 +2,8 @@ name: Create Branch on Issue
 
 on:
   issues:
-    types: [ assigned ]
-  issue_comment:
-    types: [ created ]
-  pull_request:
-    types: [ closed ]
+    types:
+      - opened
 
 jobs:
   createBranch:
@@ -17,9 +14,8 @@ jobs:
 
       - name: Create branch
         run: |
-          ISSUE_NUMBER=$(echo "${{ github.event.issue.number }}") 
-          SOME_VAR='v1'
-          BRANCH_NAME='${issue.number}-${SOME_VAR}-${issue.title}'
+          ISSUE_NUMBER=$(echo "${{ github.event.issue.number }}")
+          BRANCH_NAME='${{ github.event.issue.number }}-${{ github.event.issue.title }}'
           git checkout -b $BRANCH_NAME
           git push origin $BRANCH_NAME
 
@@ -31,5 +27,5 @@ jobs:
           script: |
             github.issues.createComment({
               issue_number: Number(process.env.ISSUE_NUMBER),
-              body: 'Branch has been created for this issue. ${%issue_number}'
+              body: 'Branch has been created for this issue.'
             })
