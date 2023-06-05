@@ -21,6 +21,8 @@ jobs:
         uses: actions/github-script@v3
         env:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
         with:
           script: |
             github.issues.createComment({
