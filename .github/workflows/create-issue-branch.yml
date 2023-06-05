@@ -15,11 +15,12 @@ jobs:
       - name: Create branch
         run: |
           ISSUE_NUMBER=$(echo "${{ github.event.issue.number }}")
-          BRANCH_NAME='feature/${{ github.event.issue.number }}'
+          BRANCH_NAME="feature/${{ github.event.issue.number }}"
           git checkout -b $BRANCH_NAME
           git push origin $BRANCH_NAME
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 #      - name: Comment on issue
 #        uses: actions/github-script@v3
