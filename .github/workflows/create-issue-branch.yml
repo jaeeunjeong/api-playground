@@ -16,8 +16,6 @@ jobs:
         run: |
           ISSUE_NUMBER=$(echo "${{ github.event.issue.number }}")
           BRANCH_NAME='feature/${{ github.event.issue.number }}'
-          git checkout -b $BRANCH_NAME
-          git push origin $BRANCH_NAME
 
       - name: Comment on issue
         uses: actions/github-script@v3
