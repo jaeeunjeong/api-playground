@@ -1,0 +1,35 @@
+name: Create Branch on Issue
+
+on:
+  issues:
+    types: [ assigned ]
+  issue_comment:
+    types: [ created ]
+  pull_request:
+    types: [ closed ]
+
+jobs:
+  createBranch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create branch
+        run: |
+          ISSUE_NUMBER=$(echo "${{ github.event.issue.number }}") 
+          SOME_VAR : 'v1'
+          BRANCH_NAME: '${issue.number}-${%SOME_VAR}-${issue.title}'
+          git checkout -b $BRANCH_NAME
+          git push origin $BRANCH_NAME
+
+      - name: Comment on issue
+        uses: actions/github-script@v3
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: Number(process.env.ISSUE_NUMBER),
+              body: 'Branch has been created for this issue. ${%issue_number}'
+            })
