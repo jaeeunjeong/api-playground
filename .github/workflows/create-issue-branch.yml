@@ -18,8 +18,7 @@ jobs:
       - name: Create branch
         run: |
           ISSUE_NUMBER=$(echo "${{ github.event.issue.number }}") 
-          SOME_VAR : 'v1'
-          BRANCH_NAME: '${issue.number}-${SOME_VAR}-${issue.title}'
+          BRANCH_NAME: '${issue.number}-${issue.title}'
           git checkout -b $BRANCH_NAME
           git push origin $BRANCH_NAME
 
