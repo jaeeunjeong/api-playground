@@ -21,16 +21,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Comment on issue
+        uses: actions/github-script@v3
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Comment on issue
-#        uses: actions/github-script@v3
-#        env:
-#          ISSUE_NUMBER: ${{ github.event.issue.number }}
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#
-#        with:
-#          script: |
-#            github.issues.createComment({
-#              issue_number: Number(process.env.ISSUE_NUMBER),
-#              body: 'Branch has been created for this issue.'
-#            })
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: Number(process.env.ISSUE_NUMBER),
+              body: 'Branch has been created for this issue.'
+            })
