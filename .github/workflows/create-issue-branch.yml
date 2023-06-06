@@ -31,5 +31,7 @@ jobs:
           script: |
             github.issues.createComment({
               issue_number: Number(process.env.ISSUE_NUMBER),
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               body: 'Branch has been created for this issue.'
             })
