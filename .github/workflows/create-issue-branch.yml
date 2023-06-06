@@ -29,9 +29,12 @@ jobs:
 
         with:
           script: |
+            const issueNumber = Number(process.env.ISSUE_NUMBER);
+            const branchName = `feature/${issueNumber}`;
+            const body = `Branch has been created for issue ${issueNumber}. \n${branchName}`;
             github.issues.createComment({
-              issue_number: Number(process.env.ISSUE_NUMBER),
+              issue_number: issueNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Branch has been created for this issue. \n feature/${issue_number}'
+              body: body
             })
