@@ -1,12 +1,14 @@
 package com.jejeong.apipractice.sevice.member;
 
-import com.jejeong.apipractice.entity.member.Member;
+import com.jejeong.apipractice.controller.member.request.SignUpRequest;
+import com.jejeong.apipractice.dto.member.MemberDto;
 
 public interface MemberService {
-    public void registrationMember(Member member);
+    public void signUp(SignUpRequest req);
 
-    public boolean isDuplicateEmail(String email);
+    public void validateSignUpInfo(SignUpRequest req);
 
-    public boolean isDuplicateNickname(String nickname);
+    public MemberDto loadUserByUserEmail(String email);
 
+    public void deleteUserByUserEmail(String email);
 }
