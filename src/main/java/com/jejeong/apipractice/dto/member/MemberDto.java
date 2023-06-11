@@ -23,6 +23,11 @@ public class MemberDto {
     protected MemberDto() {
     }
 
+    public MemberDto(String email, String nickname) {
+        this.email = email;
+        this.nickname = nickname;
+    }
+
     public static MemberDto fromEntity(Member entity) {
         MemberDto dto = new MemberDto();
 

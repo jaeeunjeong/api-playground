@@ -1,9 +1,9 @@
 package com.jejeong.apipractice.sevice.member;
 
-import com.jejeong.apipractice.controller.member.request.SignUpRequest;
+import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
 import com.jejeong.apipractice.dto.member.MemberDto;
 
-public interface MemberService {
+public interface SignService {
     public void signUp(SignUpRequest req);
 
     public void validateSignUpInfo(SignUpRequest req);

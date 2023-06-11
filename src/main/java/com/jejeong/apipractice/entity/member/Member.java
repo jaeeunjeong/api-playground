@@ -2,29 +2,30 @@ package com.jejeong.apipractice.entity.member;
 
 import com.jejeong.apipractice.entity.common.EntityDate;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 
 @Entity
+@Table(name = "member")
 @Getter
-@SQLDelete(sql = "UPDATE \"member\" SET removed_at = NOW() WHERE id = ?")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends EntityDate {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "email", unique = true, nullable = false, length = 30)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "nickname", unique = true, nullable = false, length = 30)
+    @Column(name = "nickname", unique = true, nullable = false)
     private String nickname;
-
-    protected Member() {
-    }
 
     public static Member of(String email, String password, String nickname) {
         Member inst = new Member();
