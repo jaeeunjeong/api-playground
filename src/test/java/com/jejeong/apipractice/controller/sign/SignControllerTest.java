@@ -1,4 +1,4 @@
-package com.jejeong.apipractice.controller.member;
+package com.jejeong.apipractice.controller.sign;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.Mockito.*;
@@ -67,12 +68,16 @@ class SignControllerTest {
         when(memberService.loadUserByUserEmail(anyString())).thenReturn(memberDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/me")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/me")
                 .param("email", email)
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email").value(email))
-            .andExpect(jsonPath("$.nickname").value(nickname));
+            .andExpect(jsonPath("$.nickname").value(nickname))
+            .andReturn();
+
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println(responseBody);
     }
 
     @Test
