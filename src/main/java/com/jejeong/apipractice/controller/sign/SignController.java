@@ -3,7 +3,7 @@ package com.jejeong.apipractice.controller.sign;
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
 import com.jejeong.apipractice.controller.sign.response.SignResponse;
 import com.jejeong.apipractice.dto.member.MemberDto;
-import com.jejeong.apipractice.sevice.member.SignService;
+import com.jejeong.apipractice.sevice.sign.SignService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

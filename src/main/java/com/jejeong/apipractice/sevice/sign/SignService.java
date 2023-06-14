@@ -1,4 +1,4 @@
-package com.jejeong.apipractice.sevice.member;
+package com.jejeong.apipractice.sevice.sign;
 
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
 import com.jejeong.apipractice.dto.member.MemberDto;

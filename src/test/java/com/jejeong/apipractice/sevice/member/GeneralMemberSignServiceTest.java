@@ -4,6 +4,7 @@ import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
 import com.jejeong.apipractice.dto.member.MemberDto;
 import com.jejeong.apipractice.entity.member.Member;
 import com.jejeong.apipractice.repository.member.MemberRepository;
+import com.jejeong.apipractice.sevice.sign.GeneralMemberSignService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
