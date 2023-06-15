@@ -21,11 +21,11 @@ public class AuthenticationConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            .formLogin(login -> login.disable().getOrBuild())
             .authorizeHttpRequests
                 (request -> request
-                    .requestMatchers("/api/v1/auth").permitAll()
+                    .requestMatchers("/api/v1/auth/**").permitAll()
                     .anyRequest().authenticated())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .logout(withDefaults());
         return httpSecurity.build();
     }
