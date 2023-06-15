@@ -31,15 +31,4 @@ public class GeneralMemberSignService implements SignService {
         if (memberRepository.existsByNickname(req.getNickname())) throw new IllegalArgumentException();
     }
 
-    @Override
-    public MemberDto loadUserByUserEmail(String email) {
-        return memberRepository.findByEmail(email).map(MemberDto::fromEntity).orElseThrow(IllegalArgumentException::new);
-    }
-
-    @Override
-    @Transactional
-    public void deleteUserByUserEmail(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        member.hideWithdrawalInfo();
-    }
 }

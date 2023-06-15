@@ -8,7 +8,4 @@ public interface SignService {
 
     public void validateSignUpInfo(SignUpRequest req);
 
-    public MemberDto loadUserByUserEmail(String email);
-
-    public void deleteUserByUserEmail(String email);
 }

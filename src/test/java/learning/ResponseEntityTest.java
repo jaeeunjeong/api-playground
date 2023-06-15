@@ -1,6 +1,6 @@
 package learning;
 
-import com.jejeong.apipractice.controller.sign.response.SignResponse;
+import com.jejeong.apipractice.controller.member.response.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +22,8 @@ public class ResponseEntityTest {
 
     @Controller
     public static class TestController {
-        public ResponseEntity<SignResponse> getEntity(String email) {
-            return new ResponseEntity<>(SignResponse.of(email, "nickname"), HttpStatus.OK);
+        public ResponseEntity<MemberResponse> getEntity(String email) {
+            return new ResponseEntity<>(MemberResponse.of(email, "nickname"), HttpStatus.OK);
         }
     }
 
@@ -35,13 +35,13 @@ public class ResponseEntityTest {
         String email = "email@email.com";
 
         // when
-        ResponseEntity<SignResponse> responseEntity = testController.getEntity(email);
+        ResponseEntity<MemberResponse> responseEntity = testController.getEntity(email);
 
         // then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
 
-        SignResponse res = responseEntity.getBody();
+        MemberResponse res = responseEntity.getBody();
         assertThat(res.getEmail()).isEqualTo(email);
     }
 }

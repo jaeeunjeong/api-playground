@@ -3,6 +3,7 @@ package com.jejeong.apipractice.controller.sign;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
 import com.jejeong.apipractice.dto.member.MemberDto;
+import com.jejeong.apipractice.sevice.member.MemberService;
 import com.jejeong.apipractice.sevice.sign.SignService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class SignControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    SignService memberService;
+    MemberService memberService;
     @Autowired
     private ObjectMapper objectMapper;
 
