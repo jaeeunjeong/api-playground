@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -25,13 +26,14 @@ import static org.mockito.Mockito.*;
 class GeneralMemberSignServiceTest {
 
     private GeneralMemberSignService memberService;
-
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
 
     @BeforeEach
     void beforeEach() {
-        memberService = new GeneralMemberSignService(memberRepository);
+        memberService = new GeneralMemberSignService(memberRepository, passwordEncoder);
     }
 
     @Test
@@ -74,7 +76,7 @@ class GeneralMemberSignServiceTest {
         given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
 
         // when
-        MemberDto memberDto = memberService.loadUserByUserEmail(member.getEmail());
+        MemberDto memberDto = memberService.findMember(member.getEmail());
 
         // then
         assertThat(memberDto.getEmail()).isEqualTo(member.getEmail());
@@ -88,7 +90,7 @@ class GeneralMemberSignServiceTest {
         given(memberRepository.findByEmail(anyString())).willReturn(Optional.empty());
 
         // then
-        assertThatThrownBy(() -> memberService.loadUserByUserEmail(anyString())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> memberService.findMember(anyString())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
