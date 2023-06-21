@@ -1,17 +1,23 @@
 package com.jejeong.apipractice.controller.sign;
 
+import com.jejeong.apipractice.controller.sign.request.SignInRequest;
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
+import com.jejeong.apipractice.controller.sign.response.SignInResponse;
 import com.jejeong.apipractice.controller.sign.response.SignResponse;
 import com.jejeong.apipractice.dto.member.MemberDto;
+import com.jejeong.apipractice.exception.errorCode.CommonErrorCode;
+import com.jejeong.apipractice.exception.exception.ApplicationException;
 import com.jejeong.apipractice.sevice.sign.SignService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class SignController {
 
@@ -19,26 +25,38 @@ public class SignController {
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Valid> signUpRequest(@Valid @RequestBody SignUpRequest req) {
+    public ResponseEntity<Void> signUpRequest(@Valid @RequestBody SignUpRequest req) {
         memberService.signUp(req);
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<SignResponse> processUserInfoRequest(@RequestParam String email) {
-        // TODO email 대신 사용자 정보로 조회할 수 있게끔 해야함.
-        MemberDto member = memberService.loadUserByUserEmail(email);
+    public ResponseEntity<SignResponse> processUserInfoRequest(@AuthenticationPrincipal User user) {
+        MemberDto member = memberService.findMember(user.getUsername());
+
         if (member != null)
             return ResponseEntity.ok(SignResponse.of(member.getEmail(), member.getNickname()));
+
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> processWithdrawalRequest(@RequestParam String email) {
-        // TODO email 대신 사용자 정보로 조회할 수 있게끔 해야함.
-        if (email.isBlank()) return ResponseEntity.badRequest().build();
+    public ResponseEntity<Void> processWithdrawalRequest(@AuthenticationPrincipal User user) {
+        String email = user.getUsername();
 
+        if (email.isBlank()) return ResponseEntity.badRequest().build();
         memberService.deleteUserByUserEmail(email);
+
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
+    @PostMapping("/sign-in")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> signInRequest(@Valid @RequestBody SignInRequest req) {
+        memberService.signIn(req);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

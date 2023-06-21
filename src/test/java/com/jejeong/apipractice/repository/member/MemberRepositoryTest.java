@@ -78,6 +78,8 @@ class MemberRepositoryTest {
         Member member = createMember();
         memberRepository.saveAndFlush(member);
 
+        memberRepository.findByEmail(member.getEmail());
+
         // when, then
         assertThat(memberRepository.existsByNickname(member.getEmail()));
         assertThat(memberRepository.existsByEmail("email")).isFalse();

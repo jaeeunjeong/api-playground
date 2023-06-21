@@ -65,7 +65,7 @@ class SignControllerTest {
         String email = "test@test.com";
         String nickname = "nickname";
         MemberDto memberDto = new MemberDto(email, nickname);
-        when(memberService.loadUserByUserEmail(anyString())).thenReturn(memberDto);
+        when(memberService.findMember(anyString())).thenReturn(memberDto);
 
         // when
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/me")

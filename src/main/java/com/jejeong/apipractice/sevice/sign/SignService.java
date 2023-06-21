@@ -1,14 +1,18 @@
 package com.jejeong.apipractice.sevice.sign;
 
+import com.jejeong.apipractice.controller.sign.request.SignInRequest;
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
+import com.jejeong.apipractice.controller.sign.response.SignInResponse;
 import com.jejeong.apipractice.dto.member.MemberDto;
 
 public interface SignService {
-    public void signUp(SignUpRequest req);
+    void signUp(SignUpRequest req);
 
-    public void validateSignUpInfo(SignUpRequest req);
+    void validateSignUpInfo(SignUpRequest req);
 
-    public MemberDto loadUserByUserEmail(String email);
+    MemberDto findMember(String email);
 
-    public void deleteUserByUserEmail(String email);
+    void deleteUserByUserEmail(String email);
+
+    SignInResponse signIn(SignInRequest req);
 }

@@ -6,18 +6,17 @@ import com.jejeong.apipractice.controller.sign.response.SignInResponse;
 import com.jejeong.apipractice.dto.member.MemberDto;
 import com.jejeong.apipractice.entity.member.Member;
 import com.jejeong.apipractice.exception.errorCode.CommonErrorCode;
-import com.jejeong.apipractice.exception.errorCode.ErrorCode;
 import com.jejeong.apipractice.exception.exception.ApplicationException;
 import com.jejeong.apipractice.repository.member.MemberRepository;
 import com.jejeong.apipractice.util.JwtTokenUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContextException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -26,11 +25,11 @@ import org.springframework.stereotype.Service;
 public class GeneralMemberSignService implements SignService {
 
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void signUp(SignUpRequest req) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         validateSignUpInfo(req);
         Member member = Member.of(req.getEmail(), passwordEncoder.encode(req.getPassword()), req.getNickname());
         memberRepository.saveAndFlush(member);
@@ -47,19 +46,36 @@ public class GeneralMemberSignService implements SignService {
     }
 
     @Override
+    public MemberDto findMember(String email) {
+        return null;
+    }
+
+    @Override
     @Transactional
     public void deleteUserByUserEmail(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         member.hideWithdrawalInfo();
     }
 
-    @Override
-    public MemberDto findMember(String email) {
-        return null;
+    public UserDetails loadUserByUserEmail(String userEmail) throws UsernameNotFoundException {
+        MemberDto memberDto = findMember(userEmail);
+        return User.builder()
+            .username(memberDto.getEmail())
+            .password(memberDto.getPassword())
+            .build();
     }
 
     @Override
     public SignInResponse signIn(SignInRequest req) {
-        return null;
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        UserDetails savedUser = loadUserByUserEmail(req.getEmail());
+        if (!passwordEncoder.matches(req.getPassword(), savedUser.getPassword())) {
+            throw new IllegalArgumentException();
+        }
+
+        String accessToken = JwtTokenUtils.generateAccessToken();
+        String refreshToken = JwtTokenUtils.generateRefreshToken();
+
+        return SignInResponse.of(accessToken, refreshToken);
     }
 }
