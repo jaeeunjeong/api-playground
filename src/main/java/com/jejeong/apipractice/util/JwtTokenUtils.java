@@ -53,7 +53,6 @@ public class JwtTokenUtils {
     private static String doGenerateToken(String userEmail, String key, long expireTime) {
         Claims claims = Jwts.claims();
         claims.put("userEmail", userEmail);
-        claims.put("password","asdf");
 
         return Jwts.builder()
             .setClaims(claims)
