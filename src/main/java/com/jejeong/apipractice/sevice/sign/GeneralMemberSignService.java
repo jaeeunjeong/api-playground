@@ -12,11 +12,11 @@ import com.jejeong.apipractice.util.JwtTokenUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -25,6 +25,15 @@ import org.springframework.stereotype.Service;
 public class GeneralMemberSignService implements SignService {
 
     private final MemberRepository memberRepository;
+
+    @Value("${jwt.secret-key.access}")
+    private String accessTokenKey;
+    @Value("${jwt.secret-key.refresh}")
+    private String refreshTokenKey;
+    @Value("${jwt.expired-date.access}")
+    private Long accessTokenExpiredDate;
+    @Value("${jwt.expired-date.refresh}")
+    private Long refreshTokenExpiredDate;
 
     @Override
     @Transactional
@@ -57,6 +66,7 @@ public class GeneralMemberSignService implements SignService {
         member.hideWithdrawalInfo();
     }
 
+    @Override
     public UserDetails loadUserByUserEmail(String userEmail) throws UsernameNotFoundException {
         MemberDto memberDto = findMember(userEmail);
         return User.builder()
@@ -73,8 +83,8 @@ public class GeneralMemberSignService implements SignService {
             throw new IllegalArgumentException();
         }
 
-        String accessToken = JwtTokenUtils.generateAccessToken();
-        String refreshToken = JwtTokenUtils.generateRefreshToken();
+        String accessToken = JwtTokenUtils.generateAccessToken(req.getEmail(), accessTokenKey, accessTokenExpiredDate);
+        String refreshToken = JwtTokenUtils.generateRefreshToken(req.getEmail(), refreshTokenKey, refreshTokenExpiredDate);
 
         return SignInResponse.of(accessToken, refreshToken);
     }
