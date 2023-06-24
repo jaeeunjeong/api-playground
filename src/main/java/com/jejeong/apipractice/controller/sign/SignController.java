@@ -2,8 +2,6 @@ package com.jejeong.apipractice.controller.sign;
 
 import com.jejeong.apipractice.controller.sign.request.SignInRequest;
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
-import com.jejeong.apipractice.controller.sign.response.SignResponse;
-import com.jejeong.apipractice.dto.member.MemberDto;
 import com.jejeong.apipractice.sevice.sign.SignService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +24,6 @@ public class SignController {
         signService.signUp(req);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<SignResponse> processUserInfoRequest(@AuthenticationPrincipal User user) {
-        MemberDto member = signService.findMember(user.getUsername());
-
-        if (member != null)
-            return ResponseEntity.ok(SignResponse.of(member.getEmail(), member.getNickname()));
-
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/me")
