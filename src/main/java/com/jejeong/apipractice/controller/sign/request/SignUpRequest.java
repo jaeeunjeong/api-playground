@@ -1,7 +1,7 @@
 package com.jejeong.apipractice.controller.sign.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ import lombok.Getter;
 public class SignUpRequest {
 
     @NotNull(message = "이메일은 필수 값입니다.")
-    @Pattern(regexp = "[a-zA-z0-9]+@[a-zA-z]+[.]+[a-zA-z.]+")
+    @Email(message = "잘못된 이메일 양식입니다.")
     private String email;
 
     @NotNull(message = "비밀번호는 필수 값입니다.")
