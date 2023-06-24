@@ -2,11 +2,8 @@ package com.jejeong.apipractice.controller.sign;
 
 import com.jejeong.apipractice.controller.sign.request.SignInRequest;
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
-import com.jejeong.apipractice.controller.sign.response.SignInResponse;
 import com.jejeong.apipractice.controller.sign.response.SignResponse;
 import com.jejeong.apipractice.dto.member.MemberDto;
-import com.jejeong.apipractice.exception.errorCode.CommonErrorCode;
-import com.jejeong.apipractice.exception.exception.ApplicationException;
 import com.jejeong.apipractice.sevice.sign.SignService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +18,19 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SignController {
 
-    private final SignService memberService;
+    private final SignService signService;
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> signUpRequest(@Valid @RequestBody SignUpRequest req) {
-        memberService.signUp(req);
+        signService.signUp(req);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/me")
     public ResponseEntity<SignResponse> processUserInfoRequest(@AuthenticationPrincipal User user) {
-        MemberDto member = memberService.findMember(user.getUsername());
+        MemberDto member = signService.findMember(user.getUsername());
 
         if (member != null)
             return ResponseEntity.ok(SignResponse.of(member.getEmail(), member.getNickname()));
@@ -46,7 +43,7 @@ public class SignController {
         String email = user.getUsername();
 
         if (email.isBlank()) return ResponseEntity.badRequest().build();
-        memberService.deleteUserByUserEmail(email);
+        signService.deleteUserByUserEmail(email);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -55,7 +52,7 @@ public class SignController {
     @PostMapping("/sign-in")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> signInRequest(@Valid @RequestBody SignInRequest req) {
-        memberService.signIn(req);
+        signService.signIn(req);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
