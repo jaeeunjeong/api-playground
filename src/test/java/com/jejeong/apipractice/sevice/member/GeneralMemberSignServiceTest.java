@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,97 +35,99 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class GeneralMemberSignServiceTest {
 
-    @InjectMocks
-    private GeneralMemberSignService memberService;
-    @Mock
-    private MemberRepository memberRepository;
-    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+  @InjectMocks
+  private GeneralMemberSignService memberService;
+  @Mock
+  private MemberRepository memberRepository;
+  @Mock
+  private RedisTemplate<String, String> redisTemplate;
+  BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @BeforeEach
-    void beforeEach() {
-        memberService = new GeneralMemberSignService(memberRepository);
-    }
+  @BeforeEach
+  void beforeEach() {
+    memberService = new GeneralMemberSignService(memberRepository, redisTemplate);
+  }
 
-    @Test
-    void signUp() {
-        // given
-        SignUpRequest req = SignUpRequest.of("email@example.com", "password", "nickname");
+  @Test
+  void signUp() {
+    // given
+    SignUpRequest req = SignUpRequest.of("email@example.com", "password", "nickname");
 
-        // when
-        memberService.signUp(req);
+    // when
+    memberService.signUp(req);
 
-        // then
-        verify(memberRepository, times(1)).saveAndFlush(ArgumentMatchers.any());
-    }
+    // then
+    verify(memberRepository, times(1)).saveAndFlush(ArgumentMatchers.any());
+  }
 
-    @Test
-    void validateSignUpInfo() {
-        // given
-        SignUpRequest req = SignUpRequest.of("email@example.com", "password", "nickname");
-        given(memberRepository.existsByEmail(anyString())).willReturn(true);
+  @Test
+  void validateSignUpInfo() {
+    // given
+    SignUpRequest req = SignUpRequest.of("email@example.com", "password", "nickname");
+    given(memberRepository.existsByEmail(anyString())).willReturn(true);
 
-        // when, then
-        assertThatThrownBy(() -> memberService.signUp(req)).isInstanceOf(ApplicationException.class);
-    }
+    // when, then
+    assertThatThrownBy(() -> memberService.signUp(req)).isInstanceOf(ApplicationException.class);
+  }
 
-    @DisplayName("nickname duplicate")
-    @Test
-    void test2() {
-        // given
-        SignUpRequest req = SignUpRequest.of("email@example.com", "password", "nickname");
-        given(memberRepository.existsByNickname(anyString())).willReturn(true);
+  @DisplayName("nickname duplicate")
+  @Test
+  void test2() {
+    // given
+    SignUpRequest req = SignUpRequest.of("email@example.com", "password", "nickname");
+    given(memberRepository.existsByNickname(anyString())).willReturn(true);
 
-        // when, then
-        assertThatThrownBy(() -> memberService.signUp(req)).isInstanceOf(ApplicationException.class);
-    }
+    // when, then
+    assertThatThrownBy(() -> memberService.signUp(req)).isInstanceOf(ApplicationException.class);
+  }
 
-    @Test
-    void loadUserByUserEmail() {
-        // given
-        Member member = createMember();
-        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
+  @Test
+  void loadUserByUserEmail() {
+    // given
+    Member member = createMember();
+    given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
 
-        // when
-        MemberDto memberDto = memberService.findMember(member.getEmail());
+    // when
+    MemberDto memberDto = memberService.findMember(member.getEmail());
 
-        // then
-        assertThat(memberDto.getEmail()).isEqualTo(member.getEmail());
+    // then
+    assertThat(memberDto.getEmail()).isEqualTo(member.getEmail());
 
-    }
+  }
 
-    @Test
-    @DisplayName("회원이 없는 경우 에러를 내뱉는다.")
-    void test3() {
-        // given
+  @Test
+  @DisplayName("회원이 없는 경우 에러를 내뱉는다.")
+  void test3() {
+    // given
 //        given(memberRepository.findByEmail(anyString())).willReturn(Optional.empty());
 
-        // then
+    // then
 //        assertThatThrownBy(() -> memberService.findMember(anyString())).isInstanceOf(RuntimeException.class);
-    }
+  }
 
-    @Test
-    void deleteUserByUserEmail() {
-        // given
-        Member member = createMember();
-        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
+  @Test
+  void deleteUserByUserEmail() {
+    // given
+    Member member = createMember();
+    given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
 
-        // when
-        memberService.deleteUserByUserEmail(member.getEmail());
+    // when
+    memberService.deleteUserByUserEmail(member.getEmail());
 
-        // then
-        assertThat(member.getEmail()).isEqualTo("******");
-    }
+    // then
+    assertThat(member.getEmail()).isEqualTo("******");
+  }
 
-    @Test
-    @DisplayName("로그인 테스트")
-    void test4() {
-        // given
-        String email = "email@email.com";
-        String password = "password";
-        SignInRequest req = new SignInRequest();
-        req.setEmail(email);
-        req.setPassword(password);
-        String encodedPassword = passwordEncoder.encode(password);
+  @Test
+  @DisplayName("로그인 테스트")
+  void test4() {
+    // given
+    String email = "email@email.com";
+    String password = "password";
+    SignInRequest req = new SignInRequest();
+    req.setEmail(email);
+    req.setPassword(password);
+    String encodedPassword = passwordEncoder.encode(password);
 
 //        UserDetails savedMember = User.builder().username(email).password(encodedPassword).build();
 //        given(memberService.loadUserByUserEmail(email)).willReturn(savedMember);
@@ -132,14 +135,14 @@ class GeneralMemberSignServiceTest {
 //        given(JwtTokenUtils.generateAccessToken()).willReturn("access-token");
 //        given(JwtTokenUtils.generateRefreshToken()).willReturn("refresh-token");
 
-        // when
-        SignInResponse res = memberService.signIn(req);
+    // when
+    SignInResponse res = memberService.signIn(req);
 
-        // then
-        assertThat(res).isNotNull();
-        assertThat(res.getAccessToken()).isEqualTo("access-token");
-        assertThat(res.getRefreshToken()).isEqualTo("refresh-token");
+    // then
+    assertThat(res).isNotNull();
+    assertThat(res.getAccessToken()).isEqualTo("access-token");
+    assertThat(res.getRefreshToken()).isEqualTo("refresh-token");
 
-    }
+  }
 
 }

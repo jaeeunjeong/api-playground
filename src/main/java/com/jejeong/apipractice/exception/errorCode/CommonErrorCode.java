@@ -14,6 +14,7 @@ public enum CommonErrorCode implements ErrorCode{
     DUPLICATED_USER_EMAIL(HttpStatus.CONFLICT, "Duplicated user email"),
     DUPLICATED_USER_NICKNAME(HttpStatus.CONFLICT, "Duplicated user nickname"),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, " Invalid password"),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, " Invalid token"),
     ;
 
     private final HttpStatus httpStatus;

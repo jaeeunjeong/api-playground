@@ -18,4 +18,6 @@ public interface SignService {
     SignInResponse signIn(SignInRequest req);
 
     UserDetails loadUserByUserEmail(String userEmail);
+
+    SignInResponse regenerateToken(String refreshToken);
 }
