@@ -12,6 +12,8 @@ public class MemberDto {
 
     private String email;
 
+    private String password;
+
     private String nickname;
 
     private Timestamp registeredAt;
@@ -33,6 +35,7 @@ public class MemberDto {
 
         dto.id = entity.getId();
         dto.email = entity.getEmail();
+        dto.password = entity.getPassword();
         dto.nickname = entity.getNickname();
         dto.registeredAt = entity.getRegisteredAt();
         dto.updatedAt = entity.getUpdatedAt();

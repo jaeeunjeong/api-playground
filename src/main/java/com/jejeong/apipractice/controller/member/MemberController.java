@@ -3,32 +3,31 @@ package com.jejeong.apipractice.controller.member;
 import com.jejeong.apipractice.controller.member.response.MemberResponse;
 import com.jejeong.apipractice.dto.member.MemberDto;
 import com.jejeong.apipractice.sevice.member.MemberService;
+import com.jejeong.apipractice.sevice.sign.SignService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/v1/me")
+@RestController("/api/v1/member")
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
-    @GetMapping
-    public ResponseEntity<MemberResponse> processMemberInfoRequest(@RequestParam String email) {
-        // TODO email 대신 사용자 정보로 조회할 수 있게끔 해야함.
-        MemberDto member = memberService.loadUserByUserEmail(email);
-        if (member != null)
-            return ResponseEntity.ok(MemberResponse.of(member.getEmail(), member.getNickname()));
-        return ResponseEntity.notFound().build();
+  private final MemberService memberService;
+  private final SignService signService;
+
+
+  @GetMapping("/me")
+  public ResponseEntity<MemberResponse> processUserInfoRequest(@AuthenticationPrincipal User user) {
+    MemberDto member = signService.findMember(user.getUsername());
+
+    if (member != null) {
+      return ResponseEntity.ok(MemberResponse.of(member.getEmail(), member.getNickname()));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> processWithdrawalRequest(@RequestParam String email) {
-        // TODO email 대신 사용자 정보로 조회할 수 있게끔 해야함.
-        if (email.isBlank()) return ResponseEntity.badRequest().build();
+    return ResponseEntity.notFound().build();
+  }
 
-        memberService.deleteUserByUserEmail(email);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
 }
