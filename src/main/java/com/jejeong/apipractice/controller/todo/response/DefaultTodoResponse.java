@@ -22,7 +22,7 @@ public class DefaultTodoResponse {
     res.id = dto.getId();
     res.title = dto.getTitle();
     res.description = dto.getDescription();
-    res.dueDate = Timestamp.valueOf(dto.getDueDate());
+    res.dueDate = dto.getDueDate();
     res.isComplete = dto.isComplete();
     res.isDeleted = dto.isDeleted();
     res.registeredAt = dto.getRegisteredAt();
