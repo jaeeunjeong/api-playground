@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,17 +37,19 @@ public class Todo extends EntityDate {
 
   private boolean isDeleted;
 
-  public static Todo of(String title, String description, Timestamp dueDate) {
+  public static Todo of(String title, String description, LocalDateTime dueDate) {
 
     Todo entity = new Todo();
     entity.title = title;
     entity.description = description;
-    entity.dueDate = dueDate;
+    entity.dueDate = Timestamp.valueOf(dueDate);
 
     return entity;
   }
 
-  public void updateComplete() {
-    this.isComplete = true;
+  public void updateTodo(String title, String description, LocalDateTime dueDate) {
+    this.title = title;
+    this.description = description;
+    this.dueDate = Timestamp.valueOf(dueDate);
   }
 }
