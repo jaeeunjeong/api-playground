@@ -1,11 +1,14 @@
 package com.jejeong.apipractice.entity.todo;
 
 import com.jejeong.apipractice.entity.common.EntityDate;
+import com.jejeong.apipractice.entity.member.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -36,6 +39,10 @@ public class Todo extends EntityDate {
   private boolean isComplete;
 
   private boolean isDeleted;
+
+  @ManyToOne
+  @JoinColumn(name = "member_id")
+  private Member member;
 
   public static Todo of(String title, String description, LocalDateTime dueDate) {
 
