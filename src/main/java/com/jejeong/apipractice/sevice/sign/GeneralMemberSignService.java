@@ -63,7 +63,8 @@ public class GeneralMemberSignService implements SignService {
 
   @Override
   public MemberDto findMember(String email) {
-    return null;
+    return MemberDto.fromEntity(memberRepository.findByEmail(email)
+        .orElseThrow(() -> new ApplicationException(CommonErrorCode.USER_NOT_FOUND)));
   }
 
   @Override

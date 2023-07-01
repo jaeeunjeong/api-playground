@@ -3,7 +3,6 @@ package com.jejeong.apipractice.controller.sign;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jejeong.apipractice.controller.sign.request.SignUpRequest;
 import com.jejeong.apipractice.dto.member.MemberDto;
-import com.jejeong.apipractice.sevice.member.MemberService;
 import com.jejeong.apipractice.sevice.sign.SignService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ class SignControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    MemberService memberService;
+    SignService signService;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -66,7 +65,7 @@ class SignControllerTest {
         String email = "test@test.com";
         String nickname = "nickname";
         MemberDto memberDto = new MemberDto(email, nickname);
-        when(memberService.findMember(anyString())).thenReturn(memberDto);
+        when(signService.findMember(anyString())).thenReturn(memberDto);
 
         // when
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/me")
@@ -93,6 +92,6 @@ class SignControllerTest {
             .andExpect(status().isOk());
 
         // then
-        verify(memberService).deleteUserByUserEmail(email);
+        verify(signService).deleteUserByUserEmail(email);
     }
 }
