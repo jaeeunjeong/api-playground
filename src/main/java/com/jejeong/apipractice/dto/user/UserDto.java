@@ -24,13 +24,19 @@ public class UserDto {
   private String username;
   private String password;
   private UserRole userRole;
+  private Timestamp createdAt;
+  private Timestamp updatedAt;
+  private Timestamp removedAt;
 
   public static UserDto fromEntity(User user) {
     return new UserDto(
         user.getId(),
         user.getUserName(),
         user.getPassword(),
-        user.getRole()
+        user.getRole(),
+        user.getCreatedAt(),
+        user.getUpdatedAt(),
+        user.getRemovedAt()
     );
   }
 }

@@ -1,5 +1,6 @@
 package com.jejeong.apipractice.entity.user;
 
+import com.jejeong.apipractice.entity.common.EntityDate;
 import com.jejeong.apipractice.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ import org.hibernate.annotations.SQLDelete;
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET removed_at = NOW() and is_delete = true where id=?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends EntityDate {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
