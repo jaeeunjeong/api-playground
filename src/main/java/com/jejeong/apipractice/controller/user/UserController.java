@@ -1,5 +1,6 @@
 package com.jejeong.apipractice.controller.user;
 
+import com.jejeong.apipractice.controller.response.Response;
 import com.jejeong.apipractice.controller.user.request.SignUpRequest;
 import com.jejeong.apipractice.controller.user.response.SignUpResponse;
 import com.jejeong.apipractice.service.user.UserService;
@@ -17,7 +18,7 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping("/sign-up")
-  public SignUpResponse signUp(@RequestBody SignUpRequest req) {
-    return SignUpResponse.fromUserDto(userService.join(req));
+  public Response<SignUpResponse> signUp(@RequestBody SignUpRequest req) {
+    return Response.success(SignUpResponse.fromUserDto(userService.join(req)));
   }
 }
